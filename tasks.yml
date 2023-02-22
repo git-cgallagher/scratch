@@ -1,0 +1,25 @@
+---
+- name: Ensure Directory
+  when:
+    - smb_filestorage_delegate is not defined
+    - smb_share_directory_path is defined
+    - smb_share_state == "present"
+  run_once: true
+  delegate_to: "{{ smb_filestorage_delegate | default(omit) }}"
+  ansible.windows.win_file:
+    path: "{{ smb_share_directory_path }}"
+    state: directory
+
+- name: Ensure Share State
+  run_once: true
+  delegate_to: "{{ smb_filestorage_delegate | default(omit) }}"
+  ansible.windows.win_share:
+    name: "{{ smb_share_name }}"
+    description: "{{ smb_share_description | default(omit) }}"
+    path: "{{ smb_share_path }}"
+    list: "{{ smb_share_list | default(false) }}"
+    full: "{{ smb_share_full_members | default(omit) }}"
+    read: "{{ smb_share_read_members | default(omit) }}"
+    deny: "{{ smb_share_deny_members | default(omit) }}"
+    state: "{{ smb_share_state }}"
+    rule_action: "{{ smb_share_rule_action | default(omit) }}"

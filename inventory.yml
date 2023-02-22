@@ -1,0 +1,24 @@
+---
+all:
+  vars:
+    ansible_winrm_transport: credssp
+    ansible_winrm_server_cert_validation: ignore
+    ansible_connection: winrm
+    smb_filestorage_delegate: USXXCLUFSA.ACME.LAB
+    quorum_share_name: "usxxsclu99_quorum"
+    smb_share_name: "{{ quorum_share_name }}"
+    smb_share_description: quorum for {{ quorum_share_name }}
+    smb_share_path: f:\quorum\{{ quorum_share_name }}
+    smb_share_list: false
+    smb_share_full_members: Everyone
+    ansible_user: svcDomainAdmin@ACME.LAB
+    ansible_password: nottherealpw
+    smb_share_state: present
+  children:
+    smb_delegate:
+      hosts:
+        USXXSCLUFSA.ACME.LAB:
+          ansible_host: 10.138.10.99
+    powercli:
+      hosts:
+        us99samgta.acme.lab:
